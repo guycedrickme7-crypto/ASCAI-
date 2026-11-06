@@ -1,0 +1,53 @@
+{
+  "id": "./index.html",
+  "name": "ASCAI – Produits vivriers",
+  "short_name": "ASCAI",
+  "description": "Panier de devis vivrier – Abidjan Port-Bouët",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7FBFE",
+  "theme_color": "#0F2E44",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": [
+    "shopping",
+    "food",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Espace agent",
+      "short_name": "Agent",
+      "url": "./index.html#agent",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
