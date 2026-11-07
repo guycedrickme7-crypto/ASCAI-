@@ -1,0 +1,86 @@
+ASCAI - ACTIVER LA BASE DE DONNÉES EN LIGNE (rapports de vente sérieux)
+=======================================================================
+
+À quoi ça sert
+--------------
+- Chaque agent a son propre identifiant et son mot de passe.
+- Ses rapports (montant, produits, photos) arrivent directement chez vous, enregistrés en ligne.
+- Sans réseau, le rapport est gardé sur le téléphone et part tout seul dès que la connexion revient.
+- Le nom de l'agent et l'heure d'enregistrement sont fixés par le serveur : l'agent ne peut pas les modifier.
+- Un rapport envoyé ne peut plus être modifié par l'agent. Seul le responsable peut le supprimer.
+- Dans l'Espace responsable, les rapports Word (journalier et hebdomadaire) utilisent ces données en ligne.
+- Vous pouvez marquer chaque rapport « Vérifié » (ou toute une journée d'un coup) après contrôle de la caisse et des photos.
+  Les rapports Word indiquent alors le montant vérifié et les rapports encore à vérifier.
+
+ÉTAPE 1 - Créer le projet (10 minutes, gratuit)
+-----------------------------------------------
+1. Allez sur supabase.com, touchez "Start your project" et créez un compte.
+2. "New project" : nom ASCAI, choisissez un mot de passe de base de données (notez-le),
+   région la plus proche (par exemple Europe de l'Ouest). Attendez 2 minutes.
+
+ÉTAPE 2 - Installer les règles de la base
+-----------------------------------------
+1. Menu de gauche : "SQL Editor" > "New query".
+2. Ouvrez le fichier supabase/schema.sql, copiez TOUT son contenu, collez-le, puis touchez "Run".
+3. Vous devez voir "Success". Si un message d'erreur apparaît, envoyez-le-moi.
+
+ÉTAPE 3 - Autoriser les comptes sans confirmation par e-mail
+------------------------------------------------------------
+Authentication > Sign In / Providers (ou Providers) > Email : désactivez "Confirm email", puis Save.
+
+ÉTAPE 4 - Créer les comptes
+---------------------------
+Authentication > Users > "Add user" > "Create new user" :
+- Email : l'identifiant de la personne suivi de @ascai.ci (exemple : kouassi@ascai.ci)
+- Password : un mot de passe pour elle
+- Cochez "Auto Confirm User", puis "Create user".
+L'agent se connecte dans l'application avec l'identifiant "kouassi" (sans @ascai.ci) et son mot de passe.
+Pour afficher son vrai nom dans les rapports : Table Editor > profils > modifiez la colonne "nom".
+Pour bloquer quelqu'un qui quitte l'équipe : Table Editor > profils > décochez "actif".
+
+ÉTAPE 5 - Votre compte responsable
+----------------------------------
+1. Créez votre compte comme à l'étape 4 (exemple : direction@ascai.ci).
+2. SQL Editor > New query, collez cette ligne en remplaçant l'adresse et le nom, puis "Run" :
+
+   update public.profils set role = 'responsable', nom = 'Votre nom'
+     where id = (select id from auth.users where email = 'direction@ascai.ci');
+
+ÉTAPE 6 - Relier l'application
+------------------------------
+1. Supabase : Project Settings (roue dentée) > API.
+2. Copiez "Project URL" (https://xxxx.supabase.co) et la clé "anon public"
+   (sur les nouvelles versions : "publishable key").
+   N'utilisez JAMAIS la clé "service_role" ou "secret".
+3. Sur GitHub, ouvrez le fichier config.js, touchez le crayon, collez l'URL et la clé entre les guillemets,
+   puis "Commit changes".
+   La clé "anon" est publique par conception : la protection vient des règles installées à l'étape 2.
+
+ÉTAPE 7 - Tester
+----------------
+1. Attendez une minute, ouvrez l'application, rechargez la page.
+2. "Espace agent" : connectez-vous avec un compte agent, faites un rapport avec une photo.
+   Vous devez lire "Rapport reçu par ASCAI".
+3. "Espace responsable" : connectez-vous avec votre compte, onglet "Rapports de vente" :
+   le rapport apparaît, avec le bouton "Voir les photos".
+4. Touchez « Marquer vérifié » sur le rapport, puis téléchargez le rapport journalier Word : il indique "Rapports vérifiés".
+Test sans réseau : activez le mode avion, faites un rapport (il reste "en attente"),
+désactivez le mode avion : il part tout seul.
+
+À SAVOIR
+--------
+- Quand la base est activée, le code "vendeur" et le code "ascai" ne sont plus utilisés :
+  ce sont les comptes individuels qui comptent.
+- Gratuit : le projet se met en pause après 7 jours sans aucune activité (on le relance d'un clic
+  dans Supabase). Il n'y a pas de sauvegarde automatique : une fois par mois, Table Editor > rapports >
+  Export > CSV, et gardez aussi vos rapports Word hebdomadaires.
+- Les noms de clients sont enregistrés dans la base : informez vos agents.
+- Si vous laissez config.js vide, l'application fonctionne comme avant (WhatsApp).
+- Vérifiez toujours les montants déclarés avec l'argent réellement remis : l'application enregistre
+  ce que l'agent déclare, elle ne peut pas contrôler la caisse à sa place.
+
+EN CAS DE PROBLÈME
+------------------
+- "Identifiant ou mot de passe incorrect" : vérifiez le compte dans Authentication > Users.
+- "Ce compte n'est pas encore activé" : Table Editor > profils : la ligne doit exister et "actif" être coché.
+- "Pas de connexion internet" : normal sans réseau ; le rapport reste en attente.
